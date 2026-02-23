@@ -10,7 +10,7 @@ CREATE TABLE users (
     profile_photo_url VARCHAR(500),
     company_name VARCHAR(255),
     description TEXT,
-    average_rating DECIMAL(3,2),
+    average_rating DOUBLE PRECISION,
     total_reviews INTEGER DEFAULT 0,
     is_verified BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
