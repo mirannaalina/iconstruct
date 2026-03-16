@@ -116,7 +116,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 href="/dashboard/new-request?type=REPAIR"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition cursor-pointer"
               >
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                   <Wrench className="w-6 h-6 text-orange-600" />
@@ -129,7 +129,7 @@ export default function DashboardPage() {
 
               <Link
                 href="/dashboard/new-request?type=RENOVATION"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition cursor-pointer"
               >
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                   <Home className="w-6 h-6 text-orange-600" />
@@ -142,7 +142,7 @@ export default function DashboardPage() {
 
               <Link
                 href="/dashboard/new-request?type=CONSTRUCTION"
-                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition"
+                className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition cursor-pointer"
               >
                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                   <Building2 className="w-6 h-6 text-orange-600" />
@@ -173,9 +173,10 @@ export default function DashboardPage() {
           ) : (
             <div className="divide-y divide-gray-200">
               {requests.map((request) => (
-                <div
+                <Link
+                  href={`/dashboard/requests/${request.id}`}
                   key={request.id}
-                  className="px-6 py-4 hover:bg-gray-50 transition cursor-pointer"
+                  className="block px-6 py-4 hover:bg-gray-50 transition"
                 >
                   <div className="flex justify-between items-start">
                     <div>
@@ -216,7 +217,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

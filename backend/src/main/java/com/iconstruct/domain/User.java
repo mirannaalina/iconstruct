@@ -1,5 +1,7 @@
 package com.iconstruct.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.util.Set;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -21,6 +24,7 @@ public class User {
     private String email;
 
     @Column(name = "password_hash")
+    @JsonIgnore
     private String passwordHash;
 
     @Column(name = "first_name")

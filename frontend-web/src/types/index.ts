@@ -2,7 +2,7 @@ export type UserType = 'CLIENT' | 'PROFESSIONAL';
 
 export type ServiceType = 'REPAIR' | 'RENOVATION' | 'CONSTRUCTION';
 
-export type UrgencyLevel = 'URGENT' | 'NORMAL' | 'SCHEDULED';
+export type UrgencyLevel = 'URGENT' | 'THIS_WEEK' | 'THIS_MONTH' | 'FLEXIBLE';
 
 export type RequestStatus =
   | 'ACTIVE'
@@ -103,10 +103,14 @@ export interface CreateRepairRequest {
   categoryId: number;
   problemType: string;
   problemDescription?: string;
-  urgency: UrgencyLevel;
+  urgencyLevel: UrgencyLevel;
   city: string;
   zone: string;
-  exactAddress?: string;
+  address?: string;
+  preferredDate?: string;
+  preferredTimeSlot?: string;
+  estimatedBudget?: number;
+  needsInspection?: boolean;
+  clientProvidesParts?: boolean;
   mediaUrls?: string[];
-  scheduledDate?: string;
 }

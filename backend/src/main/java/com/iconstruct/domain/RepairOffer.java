@@ -1,5 +1,6 @@
 package com.iconstruct.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class RepairOffer {
 
     @Id
@@ -18,10 +20,12 @@ public class RepairOffer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "acceptedOffer", "client"})
     private RepairRequest request;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professional_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "categories", "zones", "passwordHash"})
     private User professional;
 
     @Enumerated(EnumType.STRING)

@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -20,7 +21,7 @@ public class CreateRepairRequestDto {
     private String problemDescription;
 
     @NotNull
-    private UrgencyLevel urgency;
+    private UrgencyLevel urgencyLevel;
 
     @NotBlank
     private String city;
@@ -28,9 +29,17 @@ public class CreateRepairRequestDto {
     @NotBlank
     private String zone;
 
-    private String exactAddress;
+    private String address;
+
+    private LocalDate preferredDate;
+
+    private String preferredTimeSlot;
+
+    private BigDecimal estimatedBudget;
+
+    private Boolean needsInspection;
+
+    private Boolean clientProvidesParts;
 
     private List<String> mediaUrls;
-
-    private LocalDateTime scheduledDate; // For SCHEDULED urgency
 }

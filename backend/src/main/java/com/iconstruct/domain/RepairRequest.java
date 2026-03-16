@@ -1,5 +1,6 @@
 package com.iconstruct.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class RepairRequest {
 
     @Id
@@ -19,10 +21,12 @@ public class RepairRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "categories", "zones", "password"})
     private User client;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Category category;
 
     @Column(name = "problem_type", nullable = false)
@@ -58,6 +62,7 @@ public class RepairRequest {
     // The accepted offer (if any)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accepted_offer_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "request"})
     private RepairOffer acceptedOffer;
 
     @Column(name = "scheduled_date")

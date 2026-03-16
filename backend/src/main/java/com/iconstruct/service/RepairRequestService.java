@@ -48,12 +48,11 @@ public class RepairRequestService {
                 .category(category)
                 .problemType(dto.getProblemType())
                 .problemDescription(dto.getProblemDescription())
-                .urgency(dto.getUrgency())
+                .urgency(dto.getUrgencyLevel())
                 .city(dto.getCity())
                 .zone(dto.getZone())
-                .exactAddress(dto.getExactAddress())
+                .exactAddress(dto.getAddress())
                 .status(RequestStatus.ACTIVE)
-                .scheduledDate(dto.getScheduledDate())
                 .build();
 
         if (dto.getMediaUrls() != null) {
@@ -73,15 +72,10 @@ public class RepairRequestService {
     }
 
     public List<RepairRequest> getActiveRequestsForProfessional(Long professionalId) {
-        User professional = userRepository.findById(professionalId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Get requests matching professional's categories and zones
-        // For now, return all active requests (simplified)
+        // For now, show all active requests to all professionals
+        // TODO: Add filtering by categories/zones when profile management is implemented
         return requestRepository.findAll().stream()
                 .filter(r -> r.getStatus() == RequestStatus.ACTIVE)
-                .filter(r -> professional.getCategories().contains(r.getCategory()))
-                .filter(r -> professional.getZones().contains(r.getZone()))
                 .toList();
     }
 
