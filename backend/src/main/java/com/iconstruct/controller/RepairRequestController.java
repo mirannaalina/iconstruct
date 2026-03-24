@@ -50,6 +50,14 @@ public class RepairRequestController {
         return ResponseEntity.ok(requests);
     }
 
+    @GetMapping("/my-jobs")
+    @PreAuthorize("hasRole('PROFESSIONAL')")
+    public ResponseEntity<List<RepairRequest>> getMyJobs(
+            @CurrentUser UserPrincipal currentUser) {
+        List<RepairRequest> requests = requestService.getMyJobsForProfessional(currentUser.getId());
+        return ResponseEntity.ok(requests);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RepairRequest> getRequestById(@PathVariable Long id) {
         RepairRequest request = requestService.getRequestById(id);

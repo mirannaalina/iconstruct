@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
-import { repairRequestsApi, offersApi } from '@/lib/api';
+import { repairRequestsApi, offersApi, messagesApi } from '@/lib/api';
 import type { RepairRequest, RepairOffer } from '@/types';
 import { ArrowLeft, MapPin, Clock, Calendar, User, Phone, CheckCircle, XCircle, MessageCircle } from 'lucide-react';
 
@@ -42,6 +42,7 @@ export default function RequestDetailsPage() {
 
   const [request, setRequest] = useState<RepairRequest | null>(null);
   const [offers, setOffers] = useState<RepairOffer[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -74,6 +75,16 @@ export default function RequestDetailsPage() {
       ]);
       setRequest(requestRes.data);
       setOffers(offersRes.data);
+
+      // Load unread messages count if request is in progress
+      if (requestRes.data.status === 'IN_PROGRESS') {
+        try {
+          const unreadRes = await messagesApi.getUnreadCount(requestId);
+          setUnreadCount(unreadRes.data);
+        } catch {
+          // Ignore error for unread count
+        }
+      }
     } catch (err: any) {
       setError('Eroare la încărcarea cererii');
       console.error(err);
@@ -431,10 +442,15 @@ export default function RequestDetailsPage() {
                 <h3 className="font-semibold text-gray-900 mb-4">Acțiuni</h3>
                 <Link
                   href={`/dashboard/messages/${request.id}`}
-                  className="flex items-center justify-center gap-2 w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition"
+                  className="flex items-center justify-center gap-2 w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition relative"
                 >
                   <MessageCircle className="w-5 h-5" />
-                  Trimite mesaj
+                  Mesaje
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Link>
               </div>
             )}

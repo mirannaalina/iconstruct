@@ -13,6 +13,7 @@ export default function DashboardPage() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [requests, setRequests] = useState<RepairRequest[]>([]);
+  const [myJobs, setMyJobs] = useState<RepairRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,19 +27,23 @@ export default function DashboardPage() {
 
   const loadData = async () => {
     try {
-      const [categoriesRes, requestsRes] = await Promise.all([
-        categoriesApi.getByType('REPAIR'),
-        user?.userType === 'CLIENT'
-          ? repairRequestsApi.getMyRequests()
-          : repairRequestsApi.getAvailable(),
-      ]);
-
-      setCategories(categoriesRes.data);
-      setRequests(
-        user?.userType === 'CLIENT'
-          ? requestsRes.data.content || []
-          : requestsRes.data || []
-      );
+      if (user?.userType === 'CLIENT') {
+        const [categoriesRes, requestsRes] = await Promise.all([
+          categoriesApi.getByType('REPAIR'),
+          repairRequestsApi.getMyRequests(),
+        ]);
+        setCategories(categoriesRes.data);
+        setRequests(requestsRes.data.content || []);
+      } else {
+        const [categoriesRes, availableRes, myJobsRes] = await Promise.all([
+          categoriesApi.getByType('REPAIR'),
+          repairRequestsApi.getAvailable(),
+          repairRequestsApi.getMyJobs(),
+        ]);
+        setCategories(categoriesRes.data);
+        setRequests(availableRes.data || []);
+        setMyJobs(myJobsRes.data || []);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -88,7 +93,9 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow p-6">
-            <h3 className="text-sm font-medium text-gray-500">Cereri active</h3>
+            <h3 className="text-sm font-medium text-gray-500">
+              {user?.userType === 'CLIENT' ? 'Cereri active' : 'Cereri disponibile'}
+            </h3>
             <p className="text-3xl font-bold text-gray-900 mt-2">
               {requests.filter((r) => r.status === 'ACTIVE').length}
             </p>
@@ -96,13 +103,17 @@ export default function DashboardPage() {
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="text-sm font-medium text-gray-500">În derulare</h3>
             <p className="text-3xl font-bold text-gray-900 mt-2">
-              {requests.filter((r) => r.status === 'IN_PROGRESS').length}
+              {user?.userType === 'CLIENT'
+                ? requests.filter((r) => r.status === 'IN_PROGRESS').length
+                : myJobs.filter((r) => r.status === 'IN_PROGRESS').length}
             </p>
           </div>
           <div className="bg-white rounded-xl shadow p-6">
             <h3 className="text-sm font-medium text-gray-500">Finalizate</h3>
             <p className="text-3xl font-bold text-gray-900 mt-2">
-              {requests.filter((r) => r.status === 'COMPLETED').length}
+              {user?.userType === 'CLIENT'
+                ? requests.filter((r) => r.status === 'COMPLETED').length
+                : myJobs.filter((r) => r.status === 'COMPLETED').length}
             </p>
           </div>
         </div>
@@ -152,6 +163,46 @@ export default function DashboardPage() {
                   <p className="text-sm text-gray-500">Casă, duplex, anexă</p>
                 </div>
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* My Jobs for Professionals */}
+        {user?.userType === 'PROFESSIONAL' && myJobs.length > 0 && (
+          <div className="bg-white rounded-xl shadow mb-8">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Lucrările mele</h2>
+            </div>
+            <div className="divide-y divide-gray-200">
+              {myJobs.map((request) => (
+                <Link
+                  href={`/dashboard/requests/${request.id}`}
+                  key={request.id}
+                  className="block px-6 py-4 hover:bg-gray-50 transition"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-gray-900">
+                        {request.category?.name} - {request.problemType}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {request.city}, {request.zone}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span
+                        className={`inline-block px-2 py-1 text-xs font-medium rounded ${
+                          request.status === 'IN_PROGRESS'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
+                        {request.status === 'IN_PROGRESS' ? 'În derulare' : 'Finalizată'}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         )}

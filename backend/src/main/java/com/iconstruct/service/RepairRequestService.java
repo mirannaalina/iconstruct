@@ -79,6 +79,15 @@ public class RepairRequestService {
                 .toList();
     }
 
+    public List<RepairRequest> getMyJobsForProfessional(Long professionalId) {
+        // Get requests where this professional's offer was accepted
+        return requestRepository.findAll().stream()
+                .filter(r -> r.getAcceptedOffer() != null)
+                .filter(r -> r.getAcceptedOffer().getProfessional().getId().equals(professionalId))
+                .filter(r -> r.getStatus() == RequestStatus.IN_PROGRESS || r.getStatus() == RequestStatus.COMPLETED)
+                .toList();
+    }
+
     public RepairRequest getRequestById(Long requestId) {
         return requestRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));

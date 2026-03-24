@@ -60,6 +60,9 @@ export const repairRequestsApi = {
   getAvailable: () =>
     api.get<RepairRequest[]>('/api/repair-requests/available'),
 
+  getMyJobs: () =>
+    api.get<RepairRequest[]>('/api/repair-requests/my-jobs'),
+
   getById: (id: number) =>
     api.get<RepairRequest>(`/api/repair-requests/${id}`),
 };
@@ -77,6 +80,18 @@ export const offersApi = {
 
   reject: (offerId: number) =>
     api.post(`/api/offers/${offerId}/reject`),
+};
+
+// Messages API
+export const messagesApi = {
+  getForRequest: (requestId: number) =>
+    api.get(`/api/messages/request/${requestId}`),
+
+  send: (requestId: number, content: string) =>
+    api.post(`/api/messages/request/${requestId}`, { content }),
+
+  getUnreadCount: (requestId: number) =>
+    api.get<number>(`/api/messages/request/${requestId}/unread-count`),
 };
 
 export default api;
