@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -27,7 +27,7 @@ const urgencyLabels: Record<UrgencyLevel, string> = {
   FLEXIBLE: 'Flexibil',
 };
 
-export default function NewRequestPage() {
+function NewRequestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated } = useAuthStore();
@@ -381,5 +381,13 @@ export default function NewRequestPage() {
         </form>
       </main>
     </div>
+  );
+}
+
+export default function NewRequestPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Se încarcă...</div>}>
+      <NewRequestContent />
+    </Suspense>
   );
 }
