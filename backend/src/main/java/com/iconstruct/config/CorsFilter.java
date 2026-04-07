@@ -26,9 +26,11 @@ public class CorsFilter implements Filter {
 
         String origin = request.getHeader("Origin");
 
-        // Allow requests from Vercel and localhost
-        if (origin != null && (origin.endsWith(".vercel.app") || origin.contains("localhost"))) {
+        // Allow all origins for now
+        if (origin != null) {
             response.setHeader("Access-Control-Allow-Origin", origin);
+        } else {
+            response.setHeader("Access-Control-Allow-Origin", "*");
         }
 
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
