@@ -32,7 +32,8 @@ public class RegisterRequest {
     private UserType userType; // CLIENT or PROFESSIONAL
 
     // For professionals only
-    private String companyName;
+    private String cui; // Cod Unic de Identificare
+    private String companyName; // Will be auto-filled from ANAF
     private String description;
     private Set<Long> categoryIds; // Categories they work in
     private Set<String> zones; // Zones they cover (city/neighborhood)

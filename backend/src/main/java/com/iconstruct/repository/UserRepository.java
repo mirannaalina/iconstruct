@@ -17,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    boolean existsByCui(String cui);
+
     List<User> findByUserType(UserType userType);
 
     @Query("SELECT u FROM User u JOIN u.categories c JOIN u.zones z " +

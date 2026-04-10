@@ -24,7 +24,7 @@ function RegisterContent() {
     lastName: '',
     phoneNumber: '',
     userType: (searchParams.get('type') as UserType) || 'CLIENT',
-    companyName: '',
+    cui: '',
     description: '',
     categoryIds: [] as number[],
     zones: '',
@@ -55,7 +55,7 @@ function RegisterContent() {
         lastName: formData.lastName,
         phoneNumber: formData.phoneNumber || undefined,
         userType: formData.userType,
-        companyName: formData.companyName || undefined,
+        cui: formData.cui || undefined,
         description: formData.description || undefined,
         categoryIds: formData.categoryIds.length > 0 ? formData.categoryIds : undefined,
         zones: formData.zones ? formData.zones.split(',').map((z) => z.trim()) : undefined,
@@ -180,14 +180,19 @@ function RegisterContent() {
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nume firmă / Nume afacere
+                  CUI (Cod Unic de Identificare) *
                 </label>
                 <input
                   type="text"
-                  value={formData.companyName}
-                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  required
+                  value={formData.cui}
+                  onChange={(e) => setFormData({ ...formData, cui: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none text-gray-900"
+                  placeholder="ex: 12345678 sau RO12345678"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Numele firmei va fi preluat automat de la ANAF
+                </p>
               </div>
 
               <div>

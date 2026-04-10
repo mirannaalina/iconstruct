@@ -44,8 +44,14 @@ public class User {
     private String profilePhotoUrl;
 
     // For professionals only
+    @Column(name = "cui", unique = true)
+    private String cui;
+
     @Column(name = "company_name")
     private String companyName;
+
+    @Column(name = "company_address")
+    private String companyAddress;
 
     @Column(columnDefinition = "TEXT")
     private String description;

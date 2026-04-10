@@ -23,7 +23,9 @@ export interface User {
   phoneNumber?: string;
   userType: UserType;
   profilePhotoUrl?: string;
+  cui?: string;
   companyName?: string;
+  companyAddress?: string;
   description?: string;
   averageRating?: number;
   totalReviews?: number;
@@ -93,7 +95,7 @@ export interface RegisterRequest {
   lastName: string;
   phoneNumber?: string;
   userType: UserType;
-  companyName?: string;
+  cui?: string;
   description?: string;
   categoryIds?: number[];
   zones?: string[];

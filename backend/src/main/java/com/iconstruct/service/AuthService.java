@@ -27,18 +27,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final AnafService anafService;
 
     public AuthService(
             UserRepository userRepository,
             CategoryRepository categoryRepository,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider tokenProvider,
-            AuthenticationManager authenticationManager) {
+            AuthenticationManager authenticationManager,
+            AnafService anafService) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
+        this.anafService = anafService;
     }
 
     @Transactional
@@ -59,9 +62,28 @@ public class AuthService {
                 .totalReviews(0)
                 .build();
 
-        // For professionals, set additional fields
+        // For professionals, validate CUI and set additional fields
         if (request.getUserType() == UserType.PROFESSIONAL) {
-            user.setCompanyName(request.getCompanyName());
+            // Validate CUI with ANAF
+            if (request.getCui() == null || request.getCui().trim().isEmpty()) {
+                throw new RuntimeException("CUI-ul este obligatoriu pentru profesioniști");
+            }
+
+            // Check if CUI is already registered
+            if (userRepository.existsByCui(request.getCui())) {
+                throw new RuntimeException("Există deja un cont înregistrat cu acest CUI");
+            }
+
+            // Validate CUI with ANAF and get company info
+            AnafService.CompanyInfo companyInfo = anafService.validateCui(request.getCui());
+
+            if (!companyInfo.isActive()) {
+                throw new RuntimeException("Firma cu CUI-ul " + request.getCui() + " nu este activă");
+            }
+
+            user.setCui(companyInfo.getCui());
+            user.setCompanyName(companyInfo.getName());
+            user.setCompanyAddress(companyInfo.getAddress());
             user.setDescription(request.getDescription());
 
             if (request.getCategoryIds() != null && !request.getCategoryIds().isEmpty()) {
